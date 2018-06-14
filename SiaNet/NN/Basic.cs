@@ -137,9 +137,9 @@
         /// <param name="normalizationTimeConstant">The time constant in samples of the first-order low-pass filter that is used to compute mean/variance statistics for use in inference</param>
         /// <param name="blendTimeConst">The blend time constant in samples.</param>
         /// <returns></returns>
-        public static Function BatchNorm(Variable layer, float epsilon=0.001f, string betaInitializer = OptInitializers.Zeros, string gammaInitializers = OptInitializers.Ones,
-                                        string runningMeanInitializer = OptInitializers.Zeros, string runningStdInvInitializer = OptInitializers.Ones, bool spatial=true, 
-                                        float normalizationTimeConstant=4096f, float blendTimeConst=0.0f)
+        public static Function BatchNorm(Variable layer, float epsilon = 0.001f, string betaInitializer = OptInitializers.Zeros, string gammaInitializers = OptInitializers.Ones,
+                                        string runningMeanInitializer = OptInitializers.Zeros, string runningStdInvInitializer = OptInitializers.Ones, bool spatial = true,
+                                        float normalizationTimeConstant = 4096f, float blendTimeConst = 0.0f)
         {
             return BatchNorm(layer, epsilon, new Initializer(betaInitializer), new Initializer(gammaInitializers), new Initializer(runningMeanInitializer), new Initializer(runningStdInvInitializer),
                             spatial, normalizationTimeConstant, blendTimeConst);
@@ -315,6 +315,17 @@
         public static Function Reshape(int[] shape, int[] targetShape)
         {
             return CNTKLib.Reshape(Variable.InputVariable(shape, DataType.Float), targetShape);
+        }
+
+        public static Function Splice(Variable layer, Axis axis, VariableVector layers)
+        {
+            if (layers == null)
+            {
+                return CNTKLib.Splice(VariableVector.Repeat(layer, 2), axis);
+            }
+            var newLayers = new VariableVector(layers);
+            newLayers.Insert(0, layer);
+            return CNTKLib.Splice(newLayers, axis);
         }
 
         /// <summary>

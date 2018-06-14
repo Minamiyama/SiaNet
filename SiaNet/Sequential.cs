@@ -140,7 +140,7 @@
         /// <param name="metrics">The metrics.</param>
         private void Sequential_OnBatchEnd(int epoch, int batchNumber, uint samplesSeen, double loss, Dictionary<string, double> metrics)
         {
-            if(StopTraining)
+            if (StopTraining)
             {
                 Environment.Exit(-1);
             }
@@ -153,7 +153,7 @@
         /// <param name="batchNumber">The batch number.</param>
         private void Sequential_OnBatchStart(int epoch, int batchNumber)
         {
-            
+
         }
 
         /// <summary>
@@ -262,7 +262,7 @@
             CompileModel();
             BaseOptimizer optimizerInstance = new BaseOptimizer(optimizer);
             learners.Add(optimizerInstance.GetDefault(modelOut, regulizer));
-            
+
             lossName = loss;
             lossFunc = Losses.Get(loss, labelVariable, modelOut);
             if (!string.IsNullOrWhiteSpace(metric))
@@ -287,7 +287,7 @@
         public void Compile(BaseOptimizer optimizer, string loss, string metric = "", Regulizers regulizer = null)
         {
             CompileModel();
-            
+
             learners.Add(optimizer.Get(modelOut, regulizer));
             lossName = loss;
             lossFunc = Losses.Get(loss, labelVariable, modelOut);
@@ -412,6 +412,10 @@
                     var l15 = (Reshape)layer;
                     modelOut = NN.Basic.Reshape(modelOut, l15.TargetShape);
                     break;
+                case OptLayers.Splice:
+                    var l16 = (Splice)layer;
+                    modelOut = NN.Basic.Splice(modelOut, l16.Axis, l16.AppendingVector);
+                    break;
                 default:
                     throw new InvalidOperationException(string.Format("{0} layer is not implemented."));
             }
@@ -437,7 +441,7 @@
                     featureVariable = Variable.InputVariable(new int[] { l1.Shape.Value }, DataType.Float);
                     modelOut = NN.Basic.Dense(featureVariable, l1.Dim, l1.Act, l1.UseBias, l1.WeightInitializer, l1.BiasInitializer);
                     break;
-                
+
                 case OptLayers.BatchNorm:
                     var l2 = (BatchNorm)layer;
                     if (!l2.Shape.HasValue)

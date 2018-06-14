@@ -35,6 +35,7 @@ namespace SiaNet.Common
         public const string GRU = "GRU";
         public const string RNNCell = "RNNCell";
         public const string Reshape = "RESHAPE";
+        public const string Splice = "SPLICE";
     }
 
     /// <summary>
@@ -248,7 +249,7 @@ namespace SiaNet.Common
             public const string Grocery100 = "https://www.cntk.ai/Models/FRCN_Grocery/Fast-RCNN_grocery100.model";
             public const string Pascal = "https://www.cntk.ai/Models/FRCN_Pascal/Fast-RCNN.model";
         }
-       
+
     }
 
     public class DefaultPath
