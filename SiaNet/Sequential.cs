@@ -332,6 +332,7 @@
         /// <exception cref="System.InvalidOperationException"></exception>
         private void BuildStackedLayer(LayerConfig layer)
         {
+            layer.InputData = modelOut;
             switch (layer.Name.ToUpper())
             {
                 case OptLayers.Dense:
@@ -410,11 +411,12 @@
                     break;
                 case OptLayers.Reshape:
                     var l15 = (Reshape)layer;
-                    modelOut = NN.Basic.Reshape(modelOut, l15.TargetShape);
+                    //                    modelOut = NN.Basic.Reshape(modelOut, l15.TargetShape);
+                    modelOut = NN.Basic.Reshape(modelOut, l15.TargetShapeFunc(modelOut));
                     break;
                 case OptLayers.Splice:
                     var l16 = (Splice)layer;
-                    modelOut = NN.Basic.Splice(modelOut, l16.Axis, l16.AppendingVector);
+                    modelOut = NN.Basic.Splice(l16.TargetSpliceFunc(modelOut), l16.Axis);
                     break;
                 default:
                     throw new InvalidOperationException(string.Format("{0} layer is not implemented."));

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
+using CNTK;
 
 namespace SiaNet.Model
 {
@@ -28,5 +29,10 @@ namespace SiaNet.Model
         /// The parameters of the layer.
         /// </value>
         public dynamic Params { get; set; }
+
+        /// <summary>
+        /// 输入数据
+        /// </summary>
+        public Variable InputData { get; set; }
     }
 }

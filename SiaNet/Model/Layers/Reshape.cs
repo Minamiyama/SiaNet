@@ -1,4 +1,7 @@
-﻿namespace SiaNet.Model.Layers
+﻿using System;
+using CNTK;
+
+namespace SiaNet.Model.Layers
 {
     using System.Dynamic;
 
@@ -24,6 +27,13 @@
             : this()
         {
             TargetShape = targetshape;
+            Shape = null;
+        }
+
+        public Reshape(Func<Variable, int[]> targetShapeFunc) : this()
+        {
+            TargetShapeFunc = targetShapeFunc;
+            TargetShape = null;
             Shape = null;
         }
 
@@ -77,5 +87,7 @@
                 base.Params.Shape = value;
             }
         }
+
+        public Func<Variable, int[]> TargetShapeFunc { get; set; }
     }
 }

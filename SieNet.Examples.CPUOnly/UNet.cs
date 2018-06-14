@@ -41,30 +41,78 @@ namespace SiaNet.Examples
             BuildConvolutionLayer(imageDim, numClasses);
         }
 
-        private static Shape UpSampling2D()
+        private static void UpSampling2D()
         {
-            //            model.Add(new Reshape(new []{model.}));
-            //            var xr = new Reshape(new[] { x.Shape.Item1, x.Shape.Item2, 1, x.Shape.Item3, 1 });
-            //            var xx = CNTKLib.Splice(new VariableVector(new[] { xr, xr }), axis: new Axis(-1));
-            //            var xy = CNTKLib.Splice(new VariableVector(new[] { xx, xx }), axis: new Axis(-3));
-            //            var r = new Reshape(targetshape: new[] { x.Shape.Item1, x.Shape.Item2 * 2, x.Shape.Item3 * 2 }, shape: xy.Outputs.ToArray());
+            int[] reshape2 = new int[3];
+            model.Add(new Reshape(input =>
+            {
+                reshape2[0] = input.Shape[0];
+                reshape2[1] = input.Shape[1] * 2;
+                reshape2[2] = input.Shape[2] * 2;
+                return new[] { input.Shape[0], input.Shape[1], 1, input.Shape[2], 1 };
+            }));
+            model.Add(new Splice(new Axis(-1), input => VariableVector.Repeat(input, 2)));
+            model.Add(new Splice(new Axis(-3), input => VariableVector.Repeat(input, 2)));
+            model.Add(new Reshape(input => reshape2));
         }
 
         private static void BuildConvolutionLayer(int[] imageDim, int numClasses)
         {
             int channels;
 
-            channels = 32;
-            model.Add(new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true));
-            model.Add(new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true));
-            model.Add(new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2)));
+            {
+                channels = 32;
+                var conv1 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU,
+                    channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true,
+                    shape: Tuple.Create(imageDim[0], imageDim[1], imageDim[2]));
+                model.Add(conv1);
+                conv1 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels,
+                    weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv1);
+                var pool1 = new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2));
+                model.Add(pool1);
+            }
 
-            channels = 64;
-            model.Add(new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true));
-            model.Add(new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true));
-            model.Add(new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2)));
+            {
+                channels = 64;
+                var conv2 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv2);
+                conv2 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv2);
+                var pool2 = new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2));
+                model.Add(pool2);
+            }
 
-            channels = 128;
+            {
+                channels = 128;
+                var conv3 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv3);
+                conv3 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv3);
+                var pool3 = new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2));
+                model.Add(pool3);
+            }
+
+            {
+                channels = 256;
+                var conv4 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv4);
+                conv4 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv4);
+                var pool4 = new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2));
+                model.Add(pool4);
+            }
+
+            {
+                channels = 512;
+                var conv5 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv5);
+                conv5 = new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true);
+                model.Add(conv5);
+                var pool5 = new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2));
+                model.Add(pool5);
+            }
+
             model.Add(new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true));
             model.Add(new Conv2D(kernalSize: Tuple.Create(3, 3), activation: OptActivations.ReLU, channels: channels, weightInitializer: OptInitializers.GlorotUniform, padding: true));
             model.Add(new MaxPool2D(poolSize: Tuple.Create(2, 2), strides: Tuple.Create(2, 2)));

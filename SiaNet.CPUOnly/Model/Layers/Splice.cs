@@ -1,4 +1,5 @@
-﻿using CNTK;
+﻿using System;
+using CNTK;
 
 namespace SiaNet.Model.Layers
 {
@@ -30,6 +31,13 @@ namespace SiaNet.Model.Layers
         }
 
 
+        public Splice(Axis axis, Func<Variable, VariableVector> targetSpliceFunc) : this()
+        {
+            Axis = axis;
+            TargetSpliceFunc = targetSpliceFunc;
+        }
+
+
         /// <summary>
         /// List of integers. Does not include the batch axis.
         /// </summary>
@@ -55,5 +63,8 @@ namespace SiaNet.Model.Layers
             get { return base.Params.Axis; }
             set { base.Params.Axis = value; }
         }
+
+        public Func<Variable, VariableVector> TargetSpliceFunc { get; set; }
+
     }
 }

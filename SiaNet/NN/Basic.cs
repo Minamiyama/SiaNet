@@ -317,15 +317,9 @@
             return CNTKLib.Reshape(Variable.InputVariable(shape, DataType.Float), targetShape);
         }
 
-        public static Function Splice(Variable layer, Axis axis, VariableVector layers)
+        public static Function Splice(VariableVector operands, Axis axis)
         {
-            if (layers == null)
-            {
-                return CNTKLib.Splice(VariableVector.Repeat(layer, 2), axis);
-            }
-            var newLayers = new VariableVector(layers);
-            newLayers.Insert(0, layer);
-            return CNTKLib.Splice(newLayers, axis);
+            return CNTKLib.Splice(operands, axis);
         }
 
         /// <summary>
