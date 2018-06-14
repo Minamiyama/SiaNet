@@ -44,9 +44,9 @@ namespace SiaNet.Model.Layers
             Shape = shape;
             Channels = channels;
             KernalSize = kernalSize;
-            Strides = strides == null ? Tuple.Create<int, int>(1, 1) : strides;
+            Strides = strides ?? Tuple.Create<int, int>(1, 1);
             Padding = padding;
-            Dialation = dialation == null ? Tuple.Create<int, int>(1, 1) : dialation;
+            Dialation = dialation ?? Tuple.Create<int, int>(1, 1);
             Act = activation;
             UseBias = useBias;
             WeightInitializer = Utility.GetInitializerFromObject(weightInitializer, new Xavier());
